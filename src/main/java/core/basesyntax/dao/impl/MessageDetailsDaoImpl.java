@@ -4,6 +4,7 @@ import core.basesyntax.dao.MessageDetailsDao;
 import core.basesyntax.model.MessageDetails;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class MessageDetailsDaoImpl extends AbstractDao implements MessageDetailsDao {
     public MessageDetailsDaoImpl(SessionFactory sessionFactory) {
@@ -13,9 +14,9 @@ public class MessageDetailsDaoImpl extends AbstractDao implements MessageDetails
     @Override
     public MessageDetails create(MessageDetails entity) {
         try (Session session = factory.openSession()) {
-            session.beginTransaction();
-            session.save(entity);
-            session.getTransaction().commit();
+            Transaction transaction = session.beginTransaction();
+            session.persist(entity);
+            transaction.commit();
             return entity;
         }
     }

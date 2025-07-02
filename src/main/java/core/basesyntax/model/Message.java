@@ -13,7 +13,8 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    @OneToOne(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private MessageDetails messageDetails;
 
     public Long getId() {
@@ -38,5 +39,8 @@ public class Message {
 
     public void setMessageDetails(MessageDetails messageDetails) {
         this.messageDetails = messageDetails;
+        if (messageDetails != null) {
+            messageDetails.setMessage(this);
+        }
     }
 }

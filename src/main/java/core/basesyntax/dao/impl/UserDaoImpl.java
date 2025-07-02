@@ -16,7 +16,14 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
     public User create(User entity) {
         try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            session.save(entity);
+            session.persist(entity);
+            if (entity.getComments() != null) {
+                entity.getComments().forEach(comment -> {
+                    comment.setUser(entity);
+                    session.persist(comment);
+                });
+            }
+
             transaction.commit();
             return entity;
         }
@@ -33,7 +40,7 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
     public List<User> getAll() {
         try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            List<User> users = session.createQuery("from User").list();
+            List<User> users = session.createQuery("from User", User.class).list();
             transaction.commit();
             return users;
         }
@@ -43,9 +50,9 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
     public void remove(User entity) {
         try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
-            User attached = session.get(User.class, entity.getId());
-            if (attached != null) {
-                session.delete(attached);
+            User user = session.get(User.class, entity.getId());
+            if (user != null) {
+                session.delete(user);
             }
             transaction.commit();
         }

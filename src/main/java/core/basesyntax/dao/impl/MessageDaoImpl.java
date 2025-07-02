@@ -5,6 +5,7 @@ import core.basesyntax.model.Message;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class MessageDaoImpl extends AbstractDao implements MessageDao {
     public MessageDaoImpl(SessionFactory sessionFactory) {
@@ -12,12 +13,15 @@ public class MessageDaoImpl extends AbstractDao implements MessageDao {
     }
 
     @Override
-    public Message create(Message entity) {
+    public Message create(Message message) {
         try (Session session = factory.openSession()) {
-            session.beginTransaction();
-            session.save(entity);
-            session.getTransaction().commit();
-            return entity;
+            Transaction transaction = session.beginTransaction();
+            if (message.getMessageDetails() != null) {
+                message.getMessageDetails().setMessage(message);
+            }
+            session.persist(message);
+            transaction.commit();
+            return message;
         }
     }
 
@@ -31,10 +35,9 @@ public class MessageDaoImpl extends AbstractDao implements MessageDao {
     @Override
     public List<Message> getAll() {
         try (Session session = factory.openSession()) {
-            session.beginTransaction();
-            List<Message> messages = session
-                    .createQuery("from Message", Message.class).getResultList();
-            session.getTransaction().commit();
+            Transaction transaction = session.beginTransaction();
+            List<Message> messages = session.createQuery("from Message", Message.class).list();
+            transaction.commit();
             return messages;
         }
     }
@@ -42,12 +45,12 @@ public class MessageDaoImpl extends AbstractDao implements MessageDao {
     @Override
     public void remove(Message entity) {
         try (Session session = factory.openSession()) {
-            session.beginTransaction();
-            Message attached = session.get(Message.class, entity.getId());
-            if (attached != null) {
-                session.delete(attached);
+            Transaction transaction = session.beginTransaction();
+            Message message = session.get(Message.class, entity.getId());
+            if (message != null) {
+                session.delete(message);
             }
-            session.getTransaction().commit();
+            transaction.commit();
         }
     }
 }

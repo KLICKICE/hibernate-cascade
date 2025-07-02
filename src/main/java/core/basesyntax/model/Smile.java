@@ -1,6 +1,7 @@
 package core.basesyntax.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,7 +14,8 @@ public class Smile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String value;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
@@ -40,11 +42,11 @@ public class Smile {
         this.value = value;
     }
 
-    @Override
-    public String toString() {
-        return "Smile{"
-                + "id=" + id
-                + ", value='" + value + '\''
-                + '}';
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 }
