@@ -12,6 +12,7 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String content;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -39,8 +40,5 @@ public class Message {
 
     public void setMessageDetails(MessageDetails messageDetails) {
         this.messageDetails = messageDetails;
-        if (messageDetails != null) {
-            messageDetails.setMessage(this);
-        }
     }
 }
