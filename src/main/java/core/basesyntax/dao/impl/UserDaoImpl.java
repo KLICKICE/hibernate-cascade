@@ -16,13 +16,8 @@ public class UserDaoImpl extends AbstractDao implements UserDao {
     public User create(User entity) {
         try (Session session = factory.openSession()) {
             Transaction transaction = session.beginTransaction();
+
             session.persist(entity);
-            if (entity.getComments() != null) {
-                entity.getComments().forEach(comment -> {
-                    comment.setUser(entity);
-                    session.persist(comment);
-                });
-            }
 
             transaction.commit();
             return entity;

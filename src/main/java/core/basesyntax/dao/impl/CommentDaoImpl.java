@@ -1,5 +1,6 @@
 package core.basesyntax.dao.impl;
 
+import core.basesyntax.HibernateUtil;
 import core.basesyntax.dao.CommentDao;
 import core.basesyntax.model.Comment;
 import core.basesyntax.model.Smile;
@@ -12,6 +13,10 @@ import org.hibernate.Transaction;
 public class CommentDaoImpl extends AbstractDao implements CommentDao {
     public CommentDaoImpl(SessionFactory sessionFactory) {
         super(sessionFactory);
+    }
+
+    public CommentDaoImpl() {
+        super(HibernateUtil.getSessionFactory());
     }
 
     @Override

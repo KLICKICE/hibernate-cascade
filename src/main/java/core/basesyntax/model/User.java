@@ -16,8 +16,7 @@ public class User {
     private Long id;
     private String username;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade =
-            {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private List<Comment> comments;
 
     public Long getId() {
@@ -42,15 +41,5 @@ public class User {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public void addComment(Comment comment) {
-        comments.add(comment);
-        comment.setUser(this);
-    }
-
-    public void removeComment(Comment comment) {
-        comments.remove(comment);
-        comment.setUser(null);
     }
 }
